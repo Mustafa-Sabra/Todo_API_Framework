@@ -14,17 +14,13 @@ public class UserTests {
     @Test
     public void shouldBeAbletoResigter()
     {
-        String body = "{\n" +
-                "  \"firstName\": \"mustafa\",\n" +
-                "  \"lastName\": \"sabra\",\n" +
-                "  \"email\": \"ali@gmail.com\",\n" +
-                "  \"password\": \"123456789\"\n" +
-                "}" ;
+        User user = new User("mustafa","sabra" ,"ali2@gmail.com" ,"123456789");
+
 
         given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
-                .body(body)
+                .body(user)
                 .when()
                 .post("/api/v1/users/register")
                 .then()
@@ -37,17 +33,12 @@ public class UserTests {
     @Test
     public void shouldNotBeAbletoResigterWithTheEmail()
     {
-        String body = "{\n" +
-                "  \"firstName\": \"mustafa\",\n" +
-                "  \"lastName\": \"sabra\",\n" +
-                "  \"email\": \"ali@gmail.com\",\n" +
-                "  \"password\": \"123456789\"\n" +
-                "}" ;
+        User user = new User("mustafa","sabra" ,"ali2@gmail.com" ,"123456789");
 
         given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
-                .body(body)
+                .body(user)
                 .when()
                 .post("/api/v1/users/register")
                 .then()
@@ -59,15 +50,12 @@ public class UserTests {
     @Test
     public void shouldBeAbleToLogin()
     {
-        String body = "{\n" +
-                "  \"email\": \"ali@gmail.com\",\n" +
-                "  \"password\": \"123456789\"\n" +
-                "}" ;
+        User user = new User( "ali2@gmail.com" ,"123456789");
 
         given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
-                .body(body)
+                .body(user)
                 .when()
                 .post("/api/v1/users/login")
                 .then()
@@ -80,15 +68,12 @@ public class UserTests {
     @Test
     public void shouldNotBeAbleToLoginWithWrongPassword()
     {
-        String body = "{\n" +
-                "  \"email\": \"ali@gmail.com\",\n" +
-                "  \"password\": \"12345678\"\n" +
-                "}" ;
+        User user = new User( "ali2@gmail.com" ,"12345678");
 
         given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
-                .body(body)
+                .body(user)
                 .when()
                 .post("/api/v1/users/login")
                 .then()
