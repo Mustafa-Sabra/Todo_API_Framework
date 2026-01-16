@@ -1,15 +1,13 @@
 package com.qacart.todo.testcases;
 
 import com.qacart.todo.apis.TodoApi;
+import com.qacart.todo.data.ErrorMessages;
 import com.qacart.todo.models.Todo;
 import com.qacart.todo.steps.TodoSteps;
 import com.qacart.todo.steps.UserSteps;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.hamcrest.CoreMatchers;
 import org.testng.annotations.Test;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -44,7 +42,7 @@ public class TodoTests {
         Error returnedError = response.body().as(Error.class);
 
         assertThat(response.statusCode(),equalTo(400));
-        assertThat(returnedError.getMessage(), equalTo("\"isCompleted\" is required"));
+        assertThat(returnedError.getMessage(), equalTo(ErrorMessages.IS_COMPLETED_IS_REQUIRED));
     }
 
     @Test

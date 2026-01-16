@@ -1,4 +1,4 @@
-package com.qacart.todo.routes;
+package com.qacart.todo.data;
 
 public class Route {
 

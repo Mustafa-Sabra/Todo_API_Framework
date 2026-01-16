@@ -1,16 +1,13 @@
 package com.qacart.todo.testcases;
 
 import com.qacart.todo.apis.UserApi;
+import com.qacart.todo.data.ErrorMessages;
 import com.qacart.todo.models.User;
 import com.qacart.todo.steps.UserSteps;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.hamcrest.CoreMatchers;
 import org.testng.annotations.Test;
 
-import static com.qacart.todo.steps.UserSteps.getRegisteredUser;
 import static io.restassured.RestAssured.given;
-import static javax.management.Query.not;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,7 +40,7 @@ public class UserTests {
         Error returnedError = response.body().as(Error.class);
 
         assertThat(response.statusCode(), equalTo(400));
-        assertThat(returnedError.getMessage(), equalTo("Email is already exists in the Database"));
+        assertThat(returnedError.getMessage(), equalTo(ErrorMessages.EMAIL_ALREADY_REGISTERED));
     }
 
     @Test
@@ -75,7 +72,7 @@ public class UserTests {
         Error returnedError = response.body().as(Error.class);
 
         assertThat(response.statusCode(), equalTo(401));
-        assertThat(returnedError.getMessage(), equalTo("The email and password combination is not correct, please fill a correct email and password"));
+        assertThat(returnedError.getMessage(), equalTo(ErrorMessages.EMAIL_OR_PASSWORD_IS_WRONG));
 
     }
 }

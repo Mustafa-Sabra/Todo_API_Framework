@@ -1,7 +1,7 @@
 package com.qacart.todo.apis;
 
 import com.qacart.todo.models.Todo;
-import com.qacart.todo.routes.Route;
+import com.qacart.todo.data.Route;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
