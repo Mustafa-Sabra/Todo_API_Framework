@@ -5,15 +5,19 @@ import com.qacart.todo.data.ErrorMessages;
 import com.qacart.todo.models.Todo;
 import com.qacart.todo.steps.TodoSteps;
 import com.qacart.todo.steps.UserSteps;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+@Feature("Todo Feature")
 public class TodoTests {
 
-    @Test
+    @Story("should Be Able To Add Todo")
+    @Test(description = "should Be Able To Add Todo")
     public void shouldBeAbleToAddTodo() {
         Todo todo = TodoSteps.generateTodo();
 
@@ -28,7 +32,8 @@ public class TodoTests {
         assertThat(returnedTodo.getIsCompleted(), equalTo(todo.getIsCompleted()));
     }
 
-    @Test
+    @Story("should Not Be Able To Add Todo If Is Completed Is Missing")
+    @Test(description = "should Not Be Able To Add Todo If Is Completed Is Missing")
     public void shouldNotBeAbleToAddTodoIfIsCompletedIsMissing() {
         Todo todo = TodoSteps.generateTodo();
 
@@ -45,7 +50,8 @@ public class TodoTests {
         assertThat(returnedError.getMessage(), equalTo(ErrorMessages.IS_COMPLETED_IS_REQUIRED));
     }
 
-    @Test
+    @Story("should Be Able To Get A Todo With Id")
+    @Test(description = "should Be Able To Get A Todo With Id")
     public void shouldBeAbleToGetATodoWithId() {
 
         String token = UserSteps.getUserToken();
@@ -64,7 +70,8 @@ public class TodoTests {
         assertThat(returnedTodo.getItem() ,equalTo( todo.getItem()));
     }
 
-    @Test
+    @Story("should Be Able To Delete A Todo")
+    @Test(description = "should Be Able To Delete A Todo")
     public void shouldBeAbleToDeleteATodo() {
 
         String token = UserSteps.getUserToken();

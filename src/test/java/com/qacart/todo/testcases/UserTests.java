@@ -4,6 +4,8 @@ import com.qacart.todo.apis.UserApi;
 import com.qacart.todo.data.ErrorMessages;
 import com.qacart.todo.models.User;
 import com.qacart.todo.steps.UserSteps;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
@@ -12,9 +14,11 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Feature("User Feature")
 public class UserTests {
 
-    @Test
+    @Story("should Be Able to Resigter")
+    @Test (description = "should Be Able to Resigter")
     public void shouldBeAbletoResigter()
     {
         User user = UserSteps.generateUser();
@@ -30,7 +34,8 @@ public class UserTests {
 
     }
 
-    @Test
+    @Story("should Not Be Able to Register With The Email")
+    @Test(description = "should Not Be Able to Register With The Email")
     public void shouldNotBeAbletoResigterWithTheEmail()
     {
         User user = UserSteps.getRegisteredUser();
@@ -43,7 +48,8 @@ public class UserTests {
         assertThat(returnedError.getMessage(), equalTo(ErrorMessages.EMAIL_ALREADY_REGISTERED));
     }
 
-    @Test
+    @Story("should Be Able To Login")
+    @Test(description = "should Be Able To Login")
     public void shouldBeAbleToLogin()
     {
         User user = UserSteps.getRegisteredUser();
@@ -60,7 +66,8 @@ public class UserTests {
 
     }
 
-    @Test
+    @Story("should Not Be Able To Login With Wrong Password")
+    @Test(description = "should Not Be Able To Login With Wrong Password")
     public void shouldNotBeAbleToLoginWithWrongPassword() {
         User user = UserSteps.getRegisteredUser();
 
