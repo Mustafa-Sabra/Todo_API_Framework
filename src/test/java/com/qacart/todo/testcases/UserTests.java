@@ -1,11 +1,14 @@
 package com.qacart.todo.testcases;
 
+import com.qacart.todo.apis.UserApi;
 import com.qacart.todo.models.User;
+import com.qacart.todo.steps.UserSteps;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.hamcrest.CoreMatchers;
 import org.testng.annotations.Test;
 
+import static com.qacart.todo.steps.UserSteps.getRegisteredUser;
 import static io.restassured.RestAssured.given;
 import static javax.management.Query.not;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -17,18 +20,10 @@ public class UserTests {
     @Test
     public void shouldBeAbletoResigter()
     {
-        User user = new User("mustafa","sabra" ,"ali5@gmail.com" ,"123456789");
+        User user = UserSteps.generateUser();
 
 
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
-                .body(user)
-                .when()
-                .post("/api/v1/users/register")
-                .then()
-                .log().all()
-                .extract().response();
+        Response response = UserApi.register(user);
 
 
         User returnedUser = response.body().as(User.class);
@@ -41,17 +36,9 @@ public class UserTests {
     @Test
     public void shouldNotBeAbletoResigterWithTheEmail()
     {
-        User user = new User("mustafa","sabra" ,"ali2@gmail.com" ,"123456789");
+        User user = UserSteps.getRegisteredUser();
 
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
-                .body(user)
-                .when()
-                .post("/api/v1/users/register")
-                .then()
-                .log().all()
-                .extract().response();
+        Response response = UserApi.register(user);
 
         Error returnedError = response.body().as(Error.class);
 
@@ -62,46 +49,33 @@ public class UserTests {
     @Test
     public void shouldBeAbleToLogin()
     {
-        User user = new User( "ali2@gmail.com" ,"123456789");
+        User user = UserSteps.getRegisteredUser();
 
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
-                .body(user)
-                .when()
-                .post("/api/v1/users/login")
-                .then()
-                .log().all()
-                .extract().response();
+        User loginData = new User(user.getEmail(),user.getPassword());
+
+        Response response = UserApi.login(loginData);
 
         User returnedUser = response.body().as(User.class);
 
         assertThat(response.statusCode(), equalTo(200));
-        assertThat(returnedUser.getFirstName(), equalTo("mustafa"));
+        assertThat(returnedUser.getFirstName(), equalTo(user.getFirstName()));
         assertThat(returnedUser.getAccessToken(), notNullValue());
 
     }
 
     @Test
     public void shouldNotBeAbleToLoginWithWrongPassword() {
-        User user = new User("ali2@gmail.com", "12345678");
+        User user = UserSteps.getRegisteredUser();
 
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
-                .body(user)
-                .when()
-                .post("/api/v1/users/login")
-                .then()
-                .log().all()
-                .extract().response();
+        User loginData = new User(user.getEmail(), "wrong password");
+
+        Response response = UserApi.login(loginData);
 
 
         Error returnedError = response.body().as(Error.class);
 
         assertThat(response.statusCode(), equalTo(401));
         assertThat(returnedError.getMessage(), equalTo("The email and password combination is not correct, please fill a correct email and password"));
-
 
     }
 }

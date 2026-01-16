@@ -1,5 +1,6 @@
 package com.qacart.todo.testcases;
 
+import com.qacart.todo.apis.TodoApi;
 import com.qacart.todo.models.Todo;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -19,16 +20,7 @@ public class TodoTests {
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjhiN2M0MTliYjRjMDAxNTc5MjNmMCIsImZpcnN0TmFtZSI6Im11c3RhZmEiLCJsYXN0TmFtZSI6InNhYnJhIiwiaWF0IjoxNzY4NDg2NDYzfQ.gUevV0KpEv9gAeVGFYcKFcWNIkMfcH9vsLsIGpMb1FU";
 
 
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
-                .body(todo)
-                .auth().oauth2(token)
-                .when()
-                .post("/api/v1/tasks")
-                .then()
-                .log().all()
-                .extract().response();
+        Response response = TodoApi.addTodo(todo,token);
 
         Todo returnedTodo = response.body().as(Todo.class);
 
@@ -43,22 +35,13 @@ public class TodoTests {
 
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjhiN2M0MTliYjRjMDAxNTc5MjNmMCIsImZpcnN0TmFtZSI6Im11c3RhZmEiLCJsYXN0TmFtZSI6InNhYnJhIiwiaWF0IjoxNzY4NDg2NDYzfQ.gUevV0KpEv9gAeVGFYcKFcWNIkMfcH9vsLsIGpMb1FU";
 
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
-                .body(todo)
-                .auth().oauth2(token)
-                .when()
-                .post("/api/v1/tasks")
-                .then()
-                .log().all()
-                .extract().response();
+        Response response = TodoApi.addTodo(todo,token);
 
 
-                Error returnedError = response.body().as(Error.class);
+        Error returnedError = response.body().as(Error.class);
 
-                assertThat(response.statusCode(),equalTo(400));
-                assertThat(returnedError.getMessage(), equalTo("\"isCompleted\" is required"));
+        assertThat(response.statusCode(),equalTo(400));
+        assertThat(returnedError.getMessage(), equalTo("\"isCompleted\" is required"));
     }
 
     @Test
@@ -67,15 +50,7 @@ public class TodoTests {
 
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjhiN2M0MTliYjRjMDAxNTc5MjNmMCIsImZpcnN0TmFtZSI6Im11c3RhZmEiLCJsYXN0TmFtZSI6InNhYnJhIiwiaWF0IjoxNzY4NDg2NDYzfQ.gUevV0KpEv9gAeVGFYcKFcWNIkMfcH9vsLsIGpMb1FU";
 
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
-                .auth().oauth2(token)
-                .when()
-                .get("/api/v1/tasks/" + taskId)
-                .then()
-                .log().all()
-                .extract().response();
+        Response response = TodoApi.getTodo(token, taskId);
 
 
         Todo returnedTodo = response.body().as(Todo.class);
@@ -87,19 +62,11 @@ public class TodoTests {
 
     @Test
     public void shouldBeAbleToDeleteATodo() {
-        String taskId = "6969fdb729993a0015e5dda5";
+        String taskId = "696a064d29993a0015e5de0a";
 
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjhiN2M0MTliYjRjMDAxNTc5MjNmMCIsImZpcnN0TmFtZSI6Im11c3RhZmEiLCJsYXN0TmFtZSI6InNhYnJhIiwiaWF0IjoxNzY4NDg2NDYzfQ.gUevV0KpEv9gAeVGFYcKFcWNIkMfcH9vsLsIGpMb1FU";
 
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
-                .auth().oauth2(token)
-                .when()
-                .delete("/api/v1/tasks/" + taskId)
-                .then()
-                .log().all()
-                .extract().response();
+        Response response = TodoApi.deleteTodo(token, taskId);
 
         Todo returnedTodo = response.body().as(Todo.class);
 
