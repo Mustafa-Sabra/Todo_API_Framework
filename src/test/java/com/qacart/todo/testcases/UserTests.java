@@ -21,6 +21,7 @@ public class UserTests {
     @Test (description = "should Be Able to Resigter")
     public void shouldBeAbletoResigter()
     {
+        System.out.println("Test the CICD");
         User user = UserSteps.generateUser();
 
 
