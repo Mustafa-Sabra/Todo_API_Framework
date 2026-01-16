@@ -16,6 +16,10 @@ public class User {
 
     private String userID;
 
+    public  User( )
+    {
+    }
+
     public  User(String firstName, String lastName, String email, String password)
     {
         this.firstName = firstName;

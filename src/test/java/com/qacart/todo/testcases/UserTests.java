@@ -17,7 +17,7 @@ public class UserTests {
     @Test
     public void shouldBeAbletoResigter()
     {
-        User user = new User("mustafa","sabra" ,"ali3@gmail.com" ,"123456789");
+        User user = new User("mustafa","sabra" ,"ali5@gmail.com" ,"123456789");
 
 
         Response response = given()
@@ -31,8 +31,10 @@ public class UserTests {
                 .extract().response();
 
 
-                assertThat(response.statusCode(), equalTo(201));
-                assertThat(response.jsonPath().getString("firstName"), equalTo("mustafa"));
+        User returnedUser = response.body().as(User.class);
+
+        assertThat(response.statusCode(), equalTo(201));
+        assertThat(returnedUser.getFirstName(), equalTo(user.getFirstName()));
 
     }
 
@@ -51,8 +53,10 @@ public class UserTests {
                 .log().all()
                 .extract().response();
 
+        Error returnedError = response.body().as(Error.class);
+
         assertThat(response.statusCode(), equalTo(400));
-        assertThat(response.jsonPath().getString("message"), equalTo("Email is already exists in the Database"));
+        assertThat(returnedError.getMessage(), equalTo("Email is already exists in the Database"));
     }
 
     @Test
@@ -70,9 +74,11 @@ public class UserTests {
                 .log().all()
                 .extract().response();
 
+        User returnedUser = response.body().as(User.class);
+
         assertThat(response.statusCode(), equalTo(200));
-        assertThat(response.jsonPath().getString("firstName"), equalTo("mustafa"));
-        assertThat(response.jsonPath().getString("access_token"), notNullValue());
+        assertThat(returnedUser.getFirstName(), equalTo("mustafa"));
+        assertThat(returnedUser.getAccessToken(), notNullValue());
 
     }
 
@@ -91,8 +97,10 @@ public class UserTests {
                 .extract().response();
 
 
+        Error returnedError = response.body().as(Error.class);
+
         assertThat(response.statusCode(), equalTo(401));
-        assertThat(response.path("message"), equalTo("The email and password combination is not correct, please fill a correct email and password"));
+        assertThat(returnedError.getMessage(), equalTo("The email and password combination is not correct, please fill a correct email and password"));
 
 
     }

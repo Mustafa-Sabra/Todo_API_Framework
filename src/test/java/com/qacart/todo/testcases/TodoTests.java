@@ -30,10 +30,11 @@ public class TodoTests {
                 .log().all()
                 .extract().response();
 
+        Todo returnedTodo = response.body().as(Todo.class);
 
-                assertThat(response.statusCode(),equalTo(201));
-                assertThat(response.path("item"), equalTo("new item"));
-                assertThat(response.path("isCompleted"), equalTo(false));
+        assertThat(response.statusCode(),equalTo(201));
+        assertThat(returnedTodo.getItem(), equalTo(todo.getItem()));
+        assertThat(returnedTodo.getIsCompleted(), equalTo(todo.getIsCompleted()));
     }
 
     @Test
@@ -54,9 +55,10 @@ public class TodoTests {
                 .extract().response();
 
 
+                Error returnedError = response.body().as(Error.class);
 
                 assertThat(response.statusCode(),equalTo(400));
-                assertThat(response.path("message"), equalTo("\"isCompleted\" is required"));
+                assertThat(returnedError.getMessage(), equalTo("\"isCompleted\" is required"));
     }
 
     @Test
@@ -76,14 +78,16 @@ public class TodoTests {
                 .extract().response();
 
 
-                assertThat(response.statusCode(),equalTo(200));
-                assertThat(response.path("isCompleted") ,equalTo( false));
-                assertThat(response.path("item") ,equalTo( "new item"));
+        Todo returnedTodo = response.body().as(Todo.class);
+
+        assertThat(response.statusCode(),equalTo(200));
+        assertThat(returnedTodo.getIsCompleted() ,equalTo( false));
+        assertThat(returnedTodo.getItem() ,equalTo( "new item"));
     }
 
     @Test
     public void shouldBeAbleToDeleteATodo() {
-        String taskId = "696950de19bb4c0015792e4f";
+        String taskId = "6969fdb729993a0015e5dda5";
 
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjhiN2M0MTliYjRjMDAxNTc5MjNmMCIsImZpcnN0TmFtZSI6Im11c3RhZmEiLCJsYXN0TmFtZSI6InNhYnJhIiwiaWF0IjoxNzY4NDg2NDYzfQ.gUevV0KpEv9gAeVGFYcKFcWNIkMfcH9vsLsIGpMb1FU";
 
@@ -97,10 +101,11 @@ public class TodoTests {
                 .log().all()
                 .extract().response();
 
+        Todo returnedTodo = response.body().as(Todo.class);
 
-                assertThat(response.statusCode(),equalTo(200));
-                assertThat(response.path("isCompleted"),equalTo( false));
-                assertThat(response.path("item"), equalTo("first item"));
+        assertThat(response.statusCode(),equalTo(200));
+        assertThat(returnedTodo.getIsCompleted(),equalTo( false));
+        assertThat(returnedTodo.getItem(), equalTo("new item"));
     }
 
 
