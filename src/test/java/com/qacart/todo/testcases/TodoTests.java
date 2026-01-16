@@ -2,6 +2,8 @@ package com.qacart.todo.testcases;
 
 import com.qacart.todo.apis.TodoApi;
 import com.qacart.todo.models.Todo;
+import com.qacart.todo.steps.TodoSteps;
+import com.qacart.todo.steps.UserSteps;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.hamcrest.CoreMatchers;
@@ -15,10 +17,9 @@ public class TodoTests {
 
     @Test
     public void shouldBeAbleToAddTodo() {
-        Todo todo = new Todo(false, "new item");
+        Todo todo = TodoSteps.generateTodo();
 
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjhiN2M0MTliYjRjMDAxNTc5MjNmMCIsImZpcnN0TmFtZSI6Im11c3RhZmEiLCJsYXN0TmFtZSI6InNhYnJhIiwiaWF0IjoxNzY4NDg2NDYzfQ.gUevV0KpEv9gAeVGFYcKFcWNIkMfcH9vsLsIGpMb1FU";
-
+        String token = UserSteps.getUserToken();
 
         Response response = TodoApi.addTodo(todo,token);
 
@@ -31,11 +32,13 @@ public class TodoTests {
 
     @Test
     public void shouldNotBeAbleToAddTodoIfIsCompletedIsMissing() {
-        Todo todo = new Todo("new item");
+        Todo todo = TodoSteps.generateTodo();
 
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjhiN2M0MTliYjRjMDAxNTc5MjNmMCIsImZpcnN0TmFtZSI6Im11c3RhZmEiLCJsYXN0TmFtZSI6InNhYnJhIiwiaWF0IjoxNzY4NDg2NDYzfQ.gUevV0KpEv9gAeVGFYcKFcWNIkMfcH9vsLsIGpMb1FU";
+        Todo addData = new Todo(todo.getItem());
 
-        Response response = TodoApi.addTodo(todo,token);
+        String token = UserSteps.getUserToken();
+
+        Response response = TodoApi.addTodo(addData,token);
 
 
         Error returnedError = response.body().as(Error.class);
@@ -46,9 +49,12 @@ public class TodoTests {
 
     @Test
     public void shouldBeAbleToGetATodoWithId() {
-        String taskId = "69698cc119bb4c001579303d";
 
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjhiN2M0MTliYjRjMDAxNTc5MjNmMCIsImZpcnN0TmFtZSI6Im11c3RhZmEiLCJsYXN0TmFtZSI6InNhYnJhIiwiaWF0IjoxNzY4NDg2NDYzfQ.gUevV0KpEv9gAeVGFYcKFcWNIkMfcH9vsLsIGpMb1FU";
+        String token = UserSteps.getUserToken();
+
+        Todo todo = TodoSteps.generateTodo();
+
+        String taskId = TodoSteps.getTaskId(token, todo);
 
         Response response = TodoApi.getTodo(token, taskId);
 
@@ -56,23 +62,28 @@ public class TodoTests {
         Todo returnedTodo = response.body().as(Todo.class);
 
         assertThat(response.statusCode(),equalTo(200));
-        assertThat(returnedTodo.getIsCompleted() ,equalTo( false));
-        assertThat(returnedTodo.getItem() ,equalTo( "new item"));
+        assertThat(returnedTodo.getIsCompleted() ,equalTo( todo.getIsCompleted()));
+        assertThat(returnedTodo.getItem() ,equalTo( todo.getItem()));
     }
 
     @Test
     public void shouldBeAbleToDeleteATodo() {
-        String taskId = "696a064d29993a0015e5de0a";
 
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjhiN2M0MTliYjRjMDAxNTc5MjNmMCIsImZpcnN0TmFtZSI6Im11c3RhZmEiLCJsYXN0TmFtZSI6InNhYnJhIiwiaWF0IjoxNzY4NDg2NDYzfQ.gUevV0KpEv9gAeVGFYcKFcWNIkMfcH9vsLsIGpMb1FU";
+        String token = UserSteps.getUserToken();
+
+        Todo todo = TodoSteps.generateTodo();
+
+        String taskId = TodoSteps.getTaskId(token,todo);
+
+
 
         Response response = TodoApi.deleteTodo(token, taskId);
 
         Todo returnedTodo = response.body().as(Todo.class);
 
         assertThat(response.statusCode(),equalTo(200));
-        assertThat(returnedTodo.getIsCompleted(),equalTo( false));
-        assertThat(returnedTodo.getItem(), equalTo("new item"));
+        assertThat(returnedTodo.getIsCompleted(),equalTo( todo.getIsCompleted()));
+        assertThat(returnedTodo.getItem(), equalTo(todo.getItem()));
     }
 
 
