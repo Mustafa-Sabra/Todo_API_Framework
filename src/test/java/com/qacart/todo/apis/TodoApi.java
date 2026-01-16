@@ -1,6 +1,7 @@
 package com.qacart.todo.apis;
 
 import com.qacart.todo.models.Todo;
+import com.qacart.todo.routes.Route;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
@@ -16,7 +17,7 @@ public class TodoApi {
                 .body(todo)
                 .auth().oauth2(token)
                 .when()
-                .post("/api/v1/tasks")
+                .post(Route.TODOS_ROUTE)
                 .then()
                 .log().all()
                 .extract().response();
@@ -29,7 +30,7 @@ public class TodoApi {
                 .contentType(ContentType.JSON)
                 .auth().oauth2(token)
                 .when()
-                .get("/api/v1/tasks/" + taskId)
+                .get(Route.TODOS_ROUTE + "/" + taskId)
                 .then()
                 .log().all()
                 .extract().response();
@@ -42,7 +43,7 @@ public class TodoApi {
                 .contentType(ContentType.JSON)
                 .auth().oauth2(token)
                 .when()
-                .delete("/api/v1/tasks/" + taskId)
+                .delete(Route.TODOS_ROUTE + "/" + taskId)
                 .then()
                 .log().all()
                 .extract().response();

@@ -1,6 +1,7 @@
 package com.qacart.todo.apis;
 
 import com.qacart.todo.models.User;
+import com.qacart.todo.routes.Route;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
@@ -15,7 +16,7 @@ public class UserApi {
                 .contentType(ContentType.JSON)
                 .body(user)
                 .when()
-                .post("/api/v1/users/register")
+                .post(Route.REGISTER_ROUTE)
                 .then()
                 .log().all()
                 .extract().response();
@@ -28,7 +29,7 @@ public class UserApi {
                 .contentType(ContentType.JSON)
                 .body(user)
                 .when()
-                .post("/api/v1/users/login")
+                .post(Route.LOGIN_ROUTE)
                 .then()
                 .log().all()
                 .extract().response();
