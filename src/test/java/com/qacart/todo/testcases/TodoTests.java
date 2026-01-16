@@ -2,10 +2,12 @@ package com.qacart.todo.testcases;
 
 import com.qacart.todo.models.Todo;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import org.hamcrest.CoreMatchers;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 public class TodoTests {
@@ -17,7 +19,7 @@ public class TodoTests {
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjhiN2M0MTliYjRjMDAxNTc5MjNmMCIsImZpcnN0TmFtZSI6Im11c3RhZmEiLCJsYXN0TmFtZSI6InNhYnJhIiwiaWF0IjoxNzY4NDg2NDYzfQ.gUevV0KpEv9gAeVGFYcKFcWNIkMfcH9vsLsIGpMb1FU";
 
 
-        given()
+        Response response = given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
                 .body(todo)
@@ -26,9 +28,12 @@ public class TodoTests {
                 .post("/api/v1/tasks")
                 .then()
                 .log().all()
-                .assertThat().statusCode(201)
-                .assertThat().body("item", equalTo("new item"))
-                .assertThat().body("isCompleted", equalTo(false));
+                .extract().response();
+
+
+                assertThat(response.statusCode(),equalTo(201));
+                assertThat(response.path("item"), equalTo("new item"));
+                assertThat(response.path("isCompleted"), equalTo(false));
     }
 
     @Test
@@ -37,7 +42,7 @@ public class TodoTests {
 
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjhiN2M0MTliYjRjMDAxNTc5MjNmMCIsImZpcnN0TmFtZSI6Im11c3RhZmEiLCJsYXN0TmFtZSI6InNhYnJhIiwiaWF0IjoxNzY4NDg2NDYzfQ.gUevV0KpEv9gAeVGFYcKFcWNIkMfcH9vsLsIGpMb1FU";
 
-        given()
+        Response response = given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
                 .body(todo)
@@ -46,8 +51,12 @@ public class TodoTests {
                 .post("/api/v1/tasks")
                 .then()
                 .log().all()
-                .assertThat().statusCode(400)
-                .assertThat().body("message", equalTo("\"isCompleted\" is required"));
+                .extract().response();
+
+
+
+                assertThat(response.statusCode(),equalTo(400));
+                assertThat(response.path("message"), equalTo("\"isCompleted\" is required"));
     }
 
     @Test
@@ -56,7 +65,7 @@ public class TodoTests {
 
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjhiN2M0MTliYjRjMDAxNTc5MjNmMCIsImZpcnN0TmFtZSI6Im11c3RhZmEiLCJsYXN0TmFtZSI6InNhYnJhIiwiaWF0IjoxNzY4NDg2NDYzfQ.gUevV0KpEv9gAeVGFYcKFcWNIkMfcH9vsLsIGpMb1FU";
 
-        given()
+        Response response = given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
                 .auth().oauth2(token)
@@ -64,9 +73,12 @@ public class TodoTests {
                 .get("/api/v1/tasks/" + taskId)
                 .then()
                 .log().all()
-                .assertThat().statusCode(200)
-                .assertThat().body("isCompleted",equalTo( false))
-                .assertThat().body("item", equalTo("new item"));
+                .extract().response();
+
+
+                assertThat(response.statusCode(),equalTo(200));
+                assertThat(response.path("isCompleted") ,equalTo( false));
+                assertThat(response.path("item") ,equalTo( "new item"));
     }
 
     @Test
@@ -75,7 +87,7 @@ public class TodoTests {
 
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjhiN2M0MTliYjRjMDAxNTc5MjNmMCIsImZpcnN0TmFtZSI6Im11c3RhZmEiLCJsYXN0TmFtZSI6InNhYnJhIiwiaWF0IjoxNzY4NDg2NDYzfQ.gUevV0KpEv9gAeVGFYcKFcWNIkMfcH9vsLsIGpMb1FU";
 
-        given()
+        Response response = given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
                 .auth().oauth2(token)
@@ -83,9 +95,12 @@ public class TodoTests {
                 .delete("/api/v1/tasks/" + taskId)
                 .then()
                 .log().all()
-                .assertThat().statusCode(200)
-                .assertThat().body("isCompleted",equalTo( false))
-                .assertThat().body("item", equalTo("first item"));
+                .extract().response();
+
+
+                assertThat(response.statusCode(),equalTo(200));
+                assertThat(response.path("isCompleted"),equalTo( false));
+                assertThat(response.path("item"), equalTo("first item"));
     }
 
 

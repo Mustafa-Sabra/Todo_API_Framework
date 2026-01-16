@@ -2,22 +2,25 @@ package com.qacart.todo.testcases;
 
 import com.qacart.todo.models.User;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import org.hamcrest.CoreMatchers;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
 import static javax.management.Query.not;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class UserTests {
 
     @Test
     public void shouldBeAbletoResigter()
     {
-        User user = new User("mustafa","sabra" ,"ali2@gmail.com" ,"123456789");
+        User user = new User("mustafa","sabra" ,"ali3@gmail.com" ,"123456789");
 
 
-        given()
+        Response response = given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
                 .body(user)
@@ -25,8 +28,11 @@ public class UserTests {
                 .post("/api/v1/users/register")
                 .then()
                 .log().all()
-                .assertThat().statusCode(201)
-                .assertThat().body("firstName", equalTo("mustafa"));
+                .extract().response();
+
+
+                assertThat(response.statusCode(), equalTo(201));
+                assertThat(response.jsonPath().getString("firstName"), equalTo("mustafa"));
 
     }
 
@@ -35,7 +41,7 @@ public class UserTests {
     {
         User user = new User("mustafa","sabra" ,"ali2@gmail.com" ,"123456789");
 
-        given()
+        Response response = given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
                 .body(user)
@@ -43,8 +49,10 @@ public class UserTests {
                 .post("/api/v1/users/register")
                 .then()
                 .log().all()
-                .assertThat().statusCode(400)
-                .assertThat().body("message", equalTo("Email is already exists in the Database"));
+                .extract().response();
+
+        assertThat(response.statusCode(), equalTo(400));
+        assertThat(response.jsonPath().getString("message"), equalTo("Email is already exists in the Database"));
     }
 
     @Test
@@ -52,7 +60,7 @@ public class UserTests {
     {
         User user = new User( "ali2@gmail.com" ,"123456789");
 
-        given()
+        Response response = given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
                 .body(user)
@@ -60,17 +68,19 @@ public class UserTests {
                 .post("/api/v1/users/login")
                 .then()
                 .log().all()
-                .assertThat().statusCode(200)
-                .assertThat().body("firstName", equalTo("mustafa") )
-                .assertThat().body("access_token" , notNullValue());
+                .extract().response();
+
+        assertThat(response.statusCode(), equalTo(200));
+        assertThat(response.jsonPath().getString("firstName"), equalTo("mustafa"));
+        assertThat(response.jsonPath().getString("access_token"), notNullValue());
+
     }
 
     @Test
-    public void shouldNotBeAbleToLoginWithWrongPassword()
-    {
-        User user = new User( "ali2@gmail.com" ,"12345678");
+    public void shouldNotBeAbleToLoginWithWrongPassword() {
+        User user = new User("ali2@gmail.com", "12345678");
 
-        given()
+        Response response = given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
                 .body(user)
@@ -78,10 +88,12 @@ public class UserTests {
                 .post("/api/v1/users/login")
                 .then()
                 .log().all()
-                .assertThat().statusCode(401)
-                .assertThat().body("message", equalTo("The email and password combination is not correct, please fill a correct email and password") );
+                .extract().response();
+
+
+        assertThat(response.statusCode(), equalTo(401));
+        assertThat(response.path("message"), equalTo("The email and password combination is not correct, please fill a correct email and password"));
+
+
     }
-
-
-
 }
