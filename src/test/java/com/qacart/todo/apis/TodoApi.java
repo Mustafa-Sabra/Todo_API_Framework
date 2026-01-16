@@ -1,5 +1,6 @@
 package com.qacart.todo.apis;
 
+import com.qacart.todo.base.Specs;
 import com.qacart.todo.models.Todo;
 import com.qacart.todo.data.Route;
 import io.restassured.http.ContentType;
@@ -12,8 +13,7 @@ public class TodoApi {
     public static Response addTodo(Todo todo, String token)
     {
         return given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
+                .spec(Specs.getRequestSpecs())
                 .body(todo)
                 .auth().oauth2(token)
                 .when()
@@ -26,8 +26,7 @@ public class TodoApi {
     public static Response getTodo(String token, String taskId)
     {
         return given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
+                .spec(Specs.getRequestSpecs())
                 .auth().oauth2(token)
                 .when()
                 .get(Route.TODOS_ROUTE + "/" + taskId)
@@ -39,8 +38,7 @@ public class TodoApi {
     public static Response deleteTodo(String token, String taskId)
     {
         return given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType(ContentType.JSON)
+                .spec(Specs.getRequestSpecs())
                 .auth().oauth2(token)
                 .when()
                 .delete(Route.TODOS_ROUTE + "/" + taskId)
